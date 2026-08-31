@@ -11,16 +11,6 @@ function getPrefix(filename) {
   return match ? match[0] : "other";
 }
 
-/* Stable hash generator for layout consistency */
-function hashString(string) {
-  let hash = 0;
-  for (let i = 0; i < string.length; i++) {
-    hash = (hash << 5) - hash + string.charCodeAt(i);
-    hash = hash | 0;
-  }
-  return hash;
-}
-
 function removeExtension(filename) {
   return filename.replace(/\.[^/.]+$/, "");
 }
@@ -65,7 +55,7 @@ async function loadImages() {
 function createGallery(images) {
   gallery.innerHTML = "";
 
-  // Group images by letter prefix
+  // Group images by prefix letter
   const groups = {};
   images.forEach((filename) => {
     const prefix = getPrefix(filename);
@@ -75,7 +65,7 @@ function createGallery(images) {
     groups[prefix].push(filename);
   });
 
-  // Render group rows
+  // Render letter group rows
   Object.keys(groups).forEach((prefix) => {
     const row = document.createElement("div");
     row.classList.add("gallery-row");
@@ -84,26 +74,12 @@ function createGallery(images) {
       const figure = document.createElement("figure");
       figure.classList.add("painting");
 
-      // Replace the size assignment inside groups[prefix].forEach loop:
-
-      const seed = hashString(filename);
-      const val = Math.abs(seed % 100);
-
-      let size = 1;
-      if (val > 88) size = 5;      // ~12% Panorama Feature (3x2)
-      else if (val > 72) size = 4; // ~16% Large Hero (2x2)
-      else if (val > 55) size = 3; // ~17% Tall (1x2)
-      else if (val > 35) size = 2; // ~20% Wide (2x1)
-      else size = 1;               // ~35% Standard (1x1)
-
-      figure.classList.add(`size-${size}`);
-
       /* IMAGE */
       const img = document.createElement("img");
       img.alt = removeExtension(filename);
       img.loading = "lazy";
 
-      // Attach listener BEFORE assigning src to prevent race conditions
+      // Listener attached BEFORE src assignment to prevent race conditions
       img.addEventListener("load", () => {
         img.classList.add("loaded");
       });
@@ -144,11 +120,9 @@ toggle.addEventListener("click", () => {
   if (isArtMode) {
     gallery.classList.remove("art-mode");
     gallery.classList.add("grid-mode");
-    document.body.style.overflow = "auto";
   } else {
     gallery.classList.remove("grid-mode");
     gallery.classList.add("art-mode");
-    document.body.style.overflow = "hidden";
   }
 });
 
@@ -162,12 +136,12 @@ function openLightbox(filename) {
   lightboxImage.alt = removeExtension(filename);
   
   lightbox.classList.add("active");
-  gallery.classList.add("blurred"); // Blurs the entire background gallery
+  gallery.classList.add("blurred");
 }
 
 function closeLightbox() {
   lightbox.classList.remove("active");
-  gallery.classList.remove("blurred"); // Removes blur
+  gallery.classList.remove("blurred");
 }
 
 lightbox.addEventListener("click", closeLightbox);
