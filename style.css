@@ -1,0 +1,257 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #5D5D5D;
+  color: #d2d2d2;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: auto;
+}
+
+/* ==============================
+   ART MODE (Uncropped Masonry Wall)
+============================== */
+
+#gallery.art-mode {
+  /* Multi-column masonry: target ~200px wide columns */
+  columns: 200px 6;
+  column-gap: 12px;
+  width: 100vw;
+  height: 100vh;
+  padding: 16px 16px 80px;
+  overflow-y: scroll;
+  background: #5D5D5D;
+  transition: filter 0.3s ease, transform 0.3s ease;
+
+  /* Custom Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) #5D5D5D;
+}
+
+/* Let nested figures flow directly into masonry columns */
+#gallery.art-mode .gallery-row {
+  display: contents;
+}
+
+.art-mode .painting {
+  /* Prevents images from splitting across columns */
+  break-inside: avoid;
+  margin-bottom: 12px;
+  width: 100%;
+  margin-top: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #5D5D5D;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+}
+
+.art-mode .painting:hover {
+  transform: translateY(-3px) scale(1.02);
+  z-index: 5;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+.art-mode .painting img {
+  display: block;
+  width: 100%;
+  height: auto; /* Preserves natural image aspect ratio - ZERO CROPPING */
+  object-fit: contain;
+}
+
+/* Remove legacy cell span overrides */
+.art-mode .size-1,
+.art-mode .size-2,
+.art-mode .size-3,
+.art-mode .size-4,
+.art-mode .size-5 {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+/* Custom Scrollbar styling */
+#gallery.art-mode::-webkit-scrollbar {
+  width: 8px;
+}
+
+#gallery.art-mode::-webkit-scrollbar-track {
+  background: #5D5D5D;
+}
+
+#gallery.art-mode::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+
+#gallery.art-mode::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 600px) {
+  #gallery.art-mode {
+    columns: 140px 3;
+    column-gap: 8px;
+    padding: 10px 10px 60px;
+  }
+  
+  .art-mode .painting {
+    margin-bottom: 8px;
+  }
+}
+
+/* ==============================
+   GRID MODE (Letter Row Groups)
+============================== */
+
+#gallery.grid-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 80px;
+  height: 100vh;
+  overflow-y: auto;
+  transition: filter 0.3s ease;
+}
+
+#gallery.grid-mode .gallery-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.grid-mode .painting {
+  margin: 0;
+  cursor: pointer;
+}
+
+.grid-mode .painting img {
+  display: block;
+  width: 85px;
+  height: 85px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.painting-name {
+  display: none;
+}
+
+.grid-mode .painting-name {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: #aaa;
+  text-align: center;
+}
+
+
+/* ==============================
+   GALLERY BLUR EFFECT (WHEN LIGHTBOX IS OPEN)
+============================== */
+
+#gallery.blurred {
+  filter: blur(14px) brightness(0.7);
+  transform: scale(0.99); /* subtle depth effect */
+}
+
+
+/* ==============================
+   VIEW TOGGLE BUTTON
+============================== */
+
+#view-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.8);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#view-toggle:hover {
+  background: #fff;
+  color: #111;
+  transform: scale(1.05);
+}
+
+.toggle-icon {
+  width: 14px;
+  height: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.toggle-icon span {
+  display: block;
+  background: currentColor;
+}
+
+
+/* ==============================
+   LIGHTBOX
+============================== */
+
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.35); /* Subtle dark tint over the blurred background */
+  cursor: zoom-out;
+}
+
+#lightbox.active {
+  display: flex;
+}
+
+#lightbox img {
+  display: block;
+  max-width: 92vw;
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+}
+
+
+/* ==============================
+   IMAGE FADE-IN
+============================== */
+
+.painting img {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.painting img.loaded {
+  opacity: 1;
+}
