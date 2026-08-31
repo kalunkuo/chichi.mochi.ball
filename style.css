@@ -2,16 +2,18 @@
    GLOBAL VARIABLES (EASY THEMING)
 ============================== */
 :root {
-  --bg-color: #353535;
-  --gallery-bg: #353535;
-  --text-main: #b8b8b8;
-  --text-muted: #d2d2d2;
+  --bg-color: #252525;
+  --gallery-bg: #252525;
+  --text-main: #d2d2d2;
+  --text-muted: #aaa;
+  --line-color: rgba(255, 255, 255, 0.18);
   --toggle-bg: rgba(30, 30, 30, 0.8);
   --toggle-border: rgba(255, 255, 255, 0.2);
 
+  /* Global Border Radius */
   --border-radius: 0px;
 
-  /* Painting Widths (Uniform across each mode) */
+  /* Painting Widths */
   --art-item-width: 320px;
   --grid-item-width: 140px;
 
@@ -38,35 +40,49 @@ body {
   overflow: hidden;
 }
 
-/* Common Painting Titles */
+/* ==============================
+   COMMON DRAWING TITLE & LINE
+============================== */
+
 .painting-name {
   display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-color); /* Horizontal baseline line */
+  text-align: left;                       /* Flush left alignment */
   letter-spacing: 0.04em;
   color: var(--text-muted);
-  text-align: center;
+  flex-shrink: 0;                          /* Locks title to bottom baseline */
 }
 
 
 /* ==============================
-   ART MODE (Single Horizontal Row with Titles)
+   ART MODE (Single Horizontal Row)
 ============================== */
 
 #gallery.art-mode {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: center;
+  
+  /* 1. Aligns all items to sit flush against the bottom padding */
+  align-items: flex-end;
+  
   gap: 40px;
   width: 100vw;
   height: 100vh;
-  padding: 40px 60px;
+  
+  /* 2. EXACT DISTANCE FROM THE BOTTOM OF THE PAGE */
+  padding-top: 40px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 300px; /* <--- Adjust this value to set distance from bottom edge */
+  
   overflow-x: auto;
   overflow-y: hidden;
   background: var(--gallery-bg);
   transition: filter 0.3s ease, transform 0.3s ease;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) var(--gallery-bg);
 }
 
 #gallery.art-mode::-webkit-scrollbar {
@@ -94,8 +110,9 @@ body {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: var(--art-item-width); /* UNIFORM WIDTH FOR ALL ART MODE PAINTINGS */
+  justify-content: space-between;         /* Pushes line/text to bottom baseline */
+  width: var(--art-item-width);
+  height: 100%;
   margin: 0;
   padding: 12px;
   cursor: pointer;
@@ -103,8 +120,10 @@ body {
 
 .art-mode .painting img {
   display: block;
-  width: 100%;             /* Scales to match fixed container width */
-  height: auto;            /* Keeps original aspect ratio (no cropping) */
+  width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;                    /* Centers image vertically above line */
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-art);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -116,14 +135,13 @@ body {
 }
 
 .art-mode .painting-name {
-  margin-top: 14px;
   font-size: 13px;
   font-weight: 500;
 }
 
 
 /* ==============================
-   GRID MODE (Middle-Aligned Group Rows with Titles)
+   GRID MODE (Middle-Aligned Group Rows)
 ============================== */
 
 #gallery.grid-mode {
@@ -158,23 +176,25 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 28px;
-  align-items: center; /* ALIGNS ALL THUMBNAILS FROM THE MIDDLE OF THE ROW */
+  align-items: stretch;                   /* Stretches row cards to equal height */
   padding: 12px 0;
 }
 
 .grid-mode .painting {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: var(--grid-item-width); /* UNIFORM WIDTH FOR ALL GRID MODE PAINTINGS */
+  justify-content: space-between;         /* Align line & text across the row */
+  width: var(--grid-item-width);
   margin: 0;
   cursor: pointer;
 }
 
 .grid-mode .painting img {
   display: block;
-  width: 100%;             /* Scales to match fixed container width */
-  height: auto;            /* Keeps original aspect ratio (no cropping) */
+  width: 100%;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;                    /* Centers image vertically above line */
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-grid);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -186,7 +206,6 @@ body {
 }
 
 .grid-mode .painting-name {
-  margin-top: 8px;
   font-size: 11px;
 }
 
@@ -214,7 +233,7 @@ body {
   height: 40px;
   padding: 0;
   border: 1px solid var(--toggle-border);
-  border-radius: 0%;
+  border-radius: 50%;
   background: var(--toggle-bg);
   color: var(--text-main);
   cursor: pointer;
